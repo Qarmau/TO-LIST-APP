@@ -1,0 +1,45 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+.task-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.list-group-item {
+    transition: background-color 0.3s;
+}
+
+.list-group-item:hover {
+    background-color: #e9ecef;
+}
+
+.completed .fw-bold {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.badge {
+    align-self: flex-start;
+    margin-top: 5px;
+}
+
+.form-control:-webkit-autofill {
+    background-color: white !important;  /* Override browser autofill color */
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.alert ul {
+    margin-bottom: 0;  /* If errors use lists */
+}

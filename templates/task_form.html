@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card col-md-8 offset-md-2">
+    <div class="card-header">
+        <h1 class="mb-0">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Task</h1>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                {{ form.title }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                {{ form.description }}
+            </div>
+            <div class="form-check mb-3">
+                {{ form.completed }}
+                <label class="form-check-label" for="{{ form.completed.id_for_label }}">Completed</label>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

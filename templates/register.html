@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card col-md-6 offset-md-3 shadow-sm">
+    <div class="card-header bg-light">
+        <h1 class="mb-0">
+            <i class="fas fa-user-plus"></i> Register
+        </h1>
+    </div>
+
+    <div class="card-body">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                <input
+                    type="text"
+                    name="{{ form.username.name }}"
+                    id="{{ form.username.id_for_label }}"
+                    class="form-control{% if form.username.errors %} is-invalid{% endif %}"
+                    value="{{ form.username.value|default:'' }}"
+                    autocomplete="username"
+                    required
+                    autofocus
+                >
+                {% if form.username.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3 position-relative">
+                <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
+
+                <input
+                    type="password"
+                    name="{{ form.password1.name }}"
+                    id="{{ form.password1.id_for_label }}"
+                    class="form-control pe-5{% if form.password1.errors %} is-invalid{% endif %}"
+                    autocomplete="new-password"
+                    aria-describedby="password-hints"
+                    required
+                >
+
+                <!-- Show / hide (mobile-optimized) -->
+                <button
+                    type="button"
+                    class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-1 p-2 password-toggle"
+                    data-target="{{ form.password1.id_for_label }}"
+                    aria-label="Toggle password visibility"
+                >
+                    <i class="fas fa-eye"></i>
+                </button>
+
+                {% if form.password1.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password1.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Dynamic password hints -->
+                <div id="password-hints" class="mt-2">
+                    <ul class="list-unstyled mb-0 small">
+                        <li data-rule="length" class="text-muted d-flex align-items-center">
+                            <i class="fas fa-circle me-2"></i>
+                            At least 8 characters
+                        </li>
+                        <li data-rule="numeric" class="text-muted d-flex align-items-center">
+                            <i class="fas fa-circle me-2"></i>
+                            Not entirely numeric
+                        </li>
+                        <li data-rule="variety" class="text-muted d-flex align-items-center">
+                            <i class="fas fa-circle me-2"></i>
+                            Contains letters and numbers
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Password confirmation -->
+            <div class="mb-3 position-relative">
+                <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm password</label>
+
+                <input
+                    type="password"
+                    name="{{ form.password2.name }}"
+                    id="{{ form.password2.id_for_label }}"
+                    class="form-control pe-5{% if form.password2.errors %} is-invalid{% endif %}"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <!-- Show / hide (mobile-optimized) -->
+                <button
+                    type="button"
+                    class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-1 p-2 password-toggle"
+                    data-target="{{ form.password2.id_for_label }}"
+                    aria-label="Toggle password visibility"
+                >
+                    <i class="fas fa-eye"></i>
+                </button>
+
+                {% if form.password2.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password2.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Password logic + visibility JS -->
+<script>
+(function () {
+    const passwordInput = document.getElementById("{{ form.password1.id_for_label }}");
+    const hintItems = document.querySelectorAll("#password-hints li");
+
+    const rules = {
+        length: v => v.length >= 8,
+        numeric: v => !/^\d+$/.test(v),
+        variety: v => /[A-Za-z]/.test(v) && /\d/.test(v),
+    };
+
+    function setState(li, state) {
+        const icon = li.querySelector("i");
+        li.classList.remove("text-muted", "text-danger", "text-success");
+        icon.classList.remove("fa-circle", "fa-times-circle", "fa-check-circle");
+
+        if (state === "pass") {
+            li.classList.add("text-success");
+            icon.classList.add("fa-check-circle");
+        } else if (state === "fail") {
+            li.classList.add("text-danger");
+            icon.classList.add("fa-times-circle");
+        } else {
+            li.classList.add("text-muted");
+            icon.classList.add("fa-circle");
+        }
+    }
+
+    if (passwordInput) {
+        passwordInput.addEventListener("input", e => {
+            const value = e.target.value;
+
+            hintItems.forEach(li => {
+                const rule = rules[li.dataset.rule];
+                if (!value) {
+                    setState(li, "neutral");
+                } else {
+                    setState(li, rule(value) ? "pass" : "fail");
+                }
+            });
+        });
+    }
+
+    // Show / hide password (touch-friendly)
+    document.querySelectorAll(".password-toggle").forEach(btn => {
+        const input = document.getElementById(btn.dataset.target);
+        const icon = btn.querySelector("i");
+
+        if (!input) return;
+
+        btn.addEventListener("click", () => {
+            const visible = input.type === "text";
+            input.type = visible ? "password" : "text";
+            icon.classList.toggle("fa-eye", visible);
+            icon.classList.toggle("fa-eye-slash", !visible);
+        });
+    });
+})();
+</script>
+{% endblock %}

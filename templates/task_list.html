@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="mb-0">Your Tasks</h1>
+    </div>
+    <div class="card-body">
+        <a href="{% url 'task_create' %}" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Add Task</a>
+        <ul class="list-group task-list">
+            {% for task in tasks %}
+                <li class="list-group-item d-flex align-items-start {% if task.completed %}completed{% endif %}">
+                    <form method="post" action="{% url 'task_toggle' task.pk %}" class="me-3">
+                        {% csrf_token %}
+                        <input type="checkbox" {% if task.completed %}checked{% endif %} onchange="this.form.submit()">
+                    </form>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <div class="fw-bold">{{ task.title }}</div>
+                            <span class="badge {% if task.completed %}bg-success{% else %}bg-warning{% endif %}">
+                                {% if task.completed %}Done{% else %}Pending{% endif %}
+                            </span>
+                        </div>
+                        <p class="mb-1">{{ task.description }}</p>
+                        <small class="text-muted">Created: {{ task.created_at|date:"F j, Y, g:i a" }}</small>
+                    </div>
+                    <div class="btn-group ms-3">
+                        <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

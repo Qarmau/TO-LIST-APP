@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card col-md-6 offset-md-3 text-center">
+    <div class="card-header">
+        <h1 class="mb-0"><i class="fas fa-tasks"></i> Welcome to To-Do App</h1>
+    </div>
+    <div class="card-body">
+        <p>Get organized and manage your tasks efficiently!</p>
+        <a href="{% url 'login' %}" class="btn btn-primary me-2"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="{% url 'register' %}" class="btn btn-success"><i class="fas fa-user-plus"></i> Register</a>
+    </div>
+</div>
+{% endblock %}
